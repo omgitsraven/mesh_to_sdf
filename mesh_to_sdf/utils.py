@@ -15,12 +15,15 @@ def scale_to_unit_sphere(mesh, auto_scaling, scale_ratio):
 
     return trimesh.Trimesh(vertices=vertices, faces=mesh.faces)
 
-def scale_to_unit_cube(mesh):
+def scale_to_unit_cube(mesh, auto_scaling, scale_ratio):
     if isinstance(mesh, trimesh.Scene):
         mesh = mesh.dump().sum()
 
     vertices = mesh.vertices - mesh.bounding_box.centroid
-    vertices *= 2 / np.max(mesh.bounding_box.extents)
+    if auto_scaling:
+        vertices *= 2 / np.max(mesh.bounding_box.extents)
+    else:
+        vertices /= scale_ratio   # ratio between the original mesh and the scaled mesh inside the unit cube
 
     return trimesh.Trimesh(vertices=vertices, faces=mesh.faces)
 
